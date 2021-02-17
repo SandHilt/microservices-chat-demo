@@ -1,5 +1,5 @@
 import config from "config";
-import { Express } from "express";
+import { Router } from "express";
 import { getConnection, getRepository } from "typeorm";
 import omit from "lodash.omit";
 import User from "#root/db/entities/User";
@@ -13,12 +13,14 @@ const USER_SESSION_EXPIRY_HOURS = <number>(
   config.get("USER_SESSION_EXPIRY_HOURS")
 );
 
-const setupRoutes = (app: Express) => {
+const setupRoutes = () => {
+  const router = Router();
+
   const connection = getConnection();
   const userRepository = getRepository(User);
   const userSessionRepository = getRepository(UserSession);
 
-  app.post("/sessions", async (req, res, next) => {
+  router.post("/sessions", async (req, res, next) => {
     if (!req.body.username || !req.body.password) {
       return next(new Error("Invalid body!"));
     }
@@ -64,7 +66,7 @@ const setupRoutes = (app: Express) => {
     }
   });
 
-  app.delete("/sessions/:sessionId", async (req, res, next) => {
+  router.delete("/sessions/:sessionId", async (req, res, next) => {
     try {
       const userSession = await userSessionRepository.findOne(
         req.params.sessionId
@@ -80,7 +82,7 @@ const setupRoutes = (app: Express) => {
     }
   });
 
-  app.get("/sessions/:sessionId", async (req, res, next) => {
+  router.get("/sessions/:sessionId", async (req, res, next) => {
     try {
       const userSession = await userSessionRepository.findOne(
         req.params.sessionId
@@ -94,7 +96,7 @@ const setupRoutes = (app: Express) => {
     }
   });
 
-  app.post("/users", async (req, res, next) => {
+  router.post("/users", async (req, res, next) => {
     if (!req.body.username || !req.body.password) {
       return next(new Error("Invalid body!"));
     }
@@ -119,7 +121,7 @@ const setupRoutes = (app: Express) => {
     }
   });
 
-  app.get("/users/:userId", async (req, res, next) => {
+  router.get("/users/:userId", async (req, res, next) => {
     try {
       const user = await userRepository.findOne(req.params.userId);
 
@@ -130,6 +132,8 @@ const setupRoutes = (app: Express) => {
       return next(err);
     }
   });
+
+  return router;
 };
 
 export default setupRoutes;
