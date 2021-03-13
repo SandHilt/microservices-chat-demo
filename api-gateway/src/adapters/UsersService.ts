@@ -17,6 +17,37 @@ export interface UserSession {
 }
 
 export default class UsersService {
+  static async createUser({
+    password,
+    username,
+  }: {
+    password: string;
+    username: string;
+  }): Promise<User> {
+    const body = await got
+      .post(`${USERS_SERVICE_URI}/users`, {
+        json: { password, username },
+      })
+      .json<User>();
+    return body;
+  }
+
+  static async createUserSession({
+    password,
+    username,
+  }: {
+    password: string;
+    username: string;
+  }): Promise<UserSession> {
+    const body = await got
+      .post(`${USERS_SERVICE_URI}/sessions`, {
+        json: { password, username },
+      })
+      .json<UserSession>();
+
+    return body;
+  }
+
   static async fetchUser({ userId }: { userId: string }): Promise<User | null> {
     const body = await got
       .get(`${USERS_SERVICE_URI}/users/${userId}`)
