@@ -6,7 +6,7 @@ import UserSession from "./entities/UserSession";
 
 let connection: Connection;
 
-export const initiConnection = async () => {
+export const initConnection = async () => {
   connection = await createConnection({
     entities: [User, UserSession],
     type: "mysql",

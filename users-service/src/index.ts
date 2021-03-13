@@ -1,8 +1,8 @@
 import "reflect-metadata";
 
-import { initiConnection } from "#root/db/connection";
+import { initConnection  } from "#root/db/connection";
 import startServer from "#root/server/startServer";
 
-initiConnection().then(() => {
+initConnection().then(() => {
   startServer();
 });
